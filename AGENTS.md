@@ -34,6 +34,7 @@ src/
     ├── HomeScreen.tsx     # Main menu with vim navigation (j/k/enter/l/q)
     ├── FileBrowser.tsx    # h/j/k/l file explorer
     ├── ThemeScreen.tsx    # j/k theme picker
+    ├── LeaderboardScreen.tsx # Score history table (j/k navigate, h/q/esc back)
     └── TypeRaceScreen.tsx # The typing game (extracted from original App)
 ```
 
@@ -117,6 +118,7 @@ The `screen` state is a discriminated union of string literals:
 | `"filegame"` | Typing race with selected file content |
 | `"multiplayer"` | Placeholder — "Coming soon..." |
 | `"themes"` | Theme picker |
+| `"leaderboard"` | Score history table |
 
 Navigation is handled by `go*` callbacks that `setScreen(...)`. Each screen unmounts when leaving, which cleans up its `useKeyboard` handler automatically.
 
@@ -151,11 +153,11 @@ bun run build        # outputs dist/index.js
 
 ## Future Work
 
+- [x] **Config file** — `~/.config/asynctype/config.json` for default theme, timer mode, etc.
+- [x] **Leaderboard** — persist high scores to `~/.config/asynctype/`
 - **Multiplayer mode** — placeholder screen exists at `"multiplayer"`; needs WebSocket or local IPC implementation
-- **Leaderboard** — persist high scores to `~/.config/asynctype/`
 - **Custom word pools** — user-defined dictionaries
 - **Sound feedback** — optional beep / click on keystrokes
-- **Config file** — `~/.config/asynctype/config.json` for default theme, timer mode, etc.
 
 ## How to Collaborate
 
