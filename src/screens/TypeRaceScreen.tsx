@@ -7,6 +7,7 @@ import {
   createInitialState,
   calculateStats,
 } from "../lib/game.js";
+import { saveConfig } from "../lib/config.js";
 import type { Theme } from "../lib/themes.js";
 import { Header } from "../components/Header.js";
 import { TimerDisplay } from "../components/TimerDisplay.js";
@@ -27,19 +28,30 @@ const SHAKE_FRAMES = [
 interface TypeRaceScreenProps {
   theme: Theme;
   customText?: string;
+  defaultTimerMode?: TimerMode;
   onBack: () => void;
 }
 
-export function TypeRaceScreen({ theme, customText, onBack }: TypeRaceScreenProps) {
+export function TypeRaceScreen({
+  theme,
+  customText,
+  defaultTimerMode,
+  onBack,
+}: TypeRaceScreenProps) {
   const renderer = useRenderer();
-  const [mode, setMode] = useState<TimerMode>(30);
+  const initialMode = defaultTimerMode ?? 30;
+  const [mode, setMode] = useState<TimerMode>(initialMode);
   const [gameState, setGameState] = useState<GameState>(() => {
-    const s = createInitialState(30);
+    const s = createInitialState(initialMode);
     if (customText) {
       return { ...s, targetText: customText };
     }
     return s;
   });
+
+  useEffect(() => {
+    saveConfig({ timerMode: mode });
+  }, [mode]);
   const [stats, setStats] = useState<GameStats>(calculateStats(gameState));
 
   const [shakeFrame, setShakeFrame] = useState(0);

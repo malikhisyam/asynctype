@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useKeyboard, useRenderer, useTerminalDimensions } from "@opentui/react";
-import { Theme, DEFAULT_THEME } from "./lib/themes.js";
+import { Theme, DEFAULT_THEME, THEMES } from "./lib/themes.js";
+import { loadConfig, saveConfig } from "./lib/config.js";
 import { HomeScreen } from "./screens/HomeScreen.js";
 import { FileBrowser } from "./screens/FileBrowser.js";
 import { ThemeScreen } from "./screens/ThemeScreen.js";
@@ -43,9 +44,16 @@ function MultiplayerPlaceholder({
 function App() {
   const renderer = useRenderer();
   const { width, height } = useTerminalDimensions();
+  const config = loadConfig();
+  const initialTheme =
+    THEMES.find((t) => t.name === config.theme) ?? DEFAULT_THEME;
   const [screen, setScreen] = useState<Screen>("home");
-  const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
+  const [theme, setTheme] = useState<Theme>(initialTheme);
   const [fileContent, setFileContent] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    saveConfig({ theme: theme.name });
+  }, [theme]);
 
   const goHome = useCallback(() => {
     setScreen("home");
@@ -108,7 +116,11 @@ function App() {
         )}
 
         {screen === "random" && (
-          <TypeRaceScreen theme={theme} onBack={goHome} />
+          <TypeRaceScreen
+            theme={theme}
+            defaultTimerMode={config.timerMode}
+            onBack={goHome}
+          />
         )}
 
         {screen === "filebrowser" && (
@@ -123,6 +135,7 @@ function App() {
           <TypeRaceScreen
             theme={theme}
             customText={fileContent}
+            defaultTimerMode={config.timerMode}
             onBack={goHome}
           />
         )}
