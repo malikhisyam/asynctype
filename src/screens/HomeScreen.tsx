@@ -1,24 +1,18 @@
-import { useState, useCallback } from "react";
-import { useKeyboard, usePaste } from "@opentui/react";
-import { decodePasteBytes } from "@opentui/core";
-import { copyFileSync, existsSync, mkdirSync } from "fs";
-import { join, extname, basename } from "path";
-import { homedir } from "os";
+import { useState } from "react";
+import { useKeyboard } from "@opentui/react";
 import type { Theme } from "../lib/themes.js";
 
 interface HomeScreenProps {
   theme: Theme;
-  soundEnabled: boolean;
   onPlayRandom: () => void;
   onPlayByFile: () => void;
   onMultiplayer: () => void;
   onThemes: () => void;
   onLeaderboard: () => void;
-  onToggleSound: () => void;
   onQuit: () => void;
 }
 
-const STATIC_MENU_ITEMS = [
+const MENU_ITEMS = [
   { key: "random", label: "play random words", hint: "r" },
   { key: "file", label: "play by file", hint: "f" },
   { key: "leaderboard", label: "leaderboard", hint: "b" },
@@ -27,49 +21,16 @@ const STATIC_MENU_ITEMS = [
   { key: "quit", label: "quit", hint: "q" },
 ] as const;
 
-const SOUND_EXTENSIONS = new Set([".wav", ".mp3", ".ogg"]);
-const SOUNDS_DIR = join(homedir(), ".config", "asynctype", "sounds");
-
-function tryCopySoundFile(rawPath: string): string | null {
-  const path = rawPath.trim().replace(/["']/g, "");
-  const ext = extname(path).toLowerCase();
-  if (!SOUND_EXTENSIONS.has(ext)) return null;
-  if (!existsSync(path)) return null;
-  try {
-    if (!existsSync(SOUNDS_DIR)) {
-      mkdirSync(SOUNDS_DIR, { recursive: true });
-    }
-    const dest = join(SOUNDS_DIR, "keystroke" + ext);
-    copyFileSync(path, dest);
-    return basename(path);
-  } catch {
-    return null;
-  }
-}
-
 export function HomeScreen({
   theme,
-  soundEnabled,
   onPlayRandom,
   onPlayByFile,
   onMultiplayer,
   onThemes,
   onLeaderboard,
-  onToggleSound,
   onQuit,
 }: HomeScreenProps) {
   const [selected, setSelected] = useState(0);
-  const [soundMessage, setSoundMessage] = useState<string | null>(null);
-
-  const menuItems = [
-    ...STATIC_MENU_ITEMS.slice(0, -1),
-    {
-      key: "sound",
-      label: `sound: ${soundEnabled ? "on" : "off"}`,
-      hint: "s",
-    },
-    STATIC_MENU_ITEMS[STATIC_MENU_ITEMS.length - 1],
-  ];
 
   useKeyboard((key) => {
     if (key.name === "q") {
@@ -77,7 +38,7 @@ export function HomeScreen({
       return;
     }
     if (key.name === "j" || key.name === "down") {
-      setSelected((s) => Math.min(menuItems.length - 1, s + 1));
+      setSelected((s) => Math.min(MENU_ITEMS.length - 1, s + 1));
       return;
     }
     if (key.name === "k" || key.name === "up") {
@@ -85,7 +46,7 @@ export function HomeScreen({
       return;
     }
     if (key.name === "enter" || key.name === "return" || key.name === "l") {
-      const item = menuItems[selected];
+      const item = MENU_ITEMS[selected];
       if (item) {
         switch (item.key) {
           case "random":
@@ -102,9 +63,6 @@ export function HomeScreen({
             break;
           case "leaderboard":
             onLeaderboard();
-            break;
-          case "sound":
-            onToggleSound();
             break;
           case "quit":
             onQuit();
@@ -134,28 +92,7 @@ export function HomeScreen({
       onLeaderboard();
       return;
     }
-    if (key.name === "s") {
-      onToggleSound();
-      return;
-    }
   });
-
-  usePaste(
-    useCallback(
-      (event) => {
-        const item = menuItems[selected];
-        if (item?.key !== "sound") return;
-        const text = decodePasteBytes(event.bytes).trim();
-        const copied = tryCopySoundFile(text);
-        if (copied) {
-          setSoundMessage(`Loaded "${copied}"`);
-        } else if (text.length > 0) {
-          setSoundMessage("Not a valid sound file (.wav/.mp3/.ogg)");
-        }
-      },
-      [menuItems, selected]
-    )
-  );
 
   return (
     <box flexDirection="column" alignItems="center" gap={1} paddingY={2}>
@@ -165,7 +102,7 @@ export function HomeScreen({
       <text fg={theme.muted}>a vim-inspired terminal typing racer</text>
 
       <box flexDirection="column" gap={0} marginTop={2} alignItems="flex-start">
-        {menuItems.map((item, i) => {
+        {MENU_ITEMS.map((item, i) => {
           const isSelected = i === selected;
           return (
             <box
@@ -188,18 +125,8 @@ export function HomeScreen({
         })}
       </box>
 
-      {soundMessage && (
-        <box flexDirection="column" marginTop={1} alignItems="center">
-          <text fg={theme.accent}>{soundMessage}</text>
-        </box>
-      )}
-
       <box flexDirection="column" marginTop={2} alignItems="center">
-        <text fg={theme.muted}>
-          {menuItems[selected]?.key === "sound"
-            ? "s to toggle · drop sound file here · q to quit"
-            : "j/k to navigate · enter or l to select · q to quit"}
-        </text>
+        <text fg={theme.muted}>j/k to navigate · enter or l to select · q to quit</text>
       </box>
     </box>
   );

@@ -51,18 +51,11 @@ function App() {
     THEMES.find((t) => t.name === config.theme) ?? DEFAULT_THEME;
   const [screen, setScreen] = useState<Screen>("home");
   const [theme, setTheme] = useState<Theme>(initialTheme);
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(
-    config.soundEnabled ?? false
-  );
   const [fileContent, setFileContent] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     saveConfig({ theme: theme.name });
   }, [theme]);
-
-  useEffect(() => {
-    saveConfig({ soundEnabled });
-  }, [soundEnabled]);
 
   const goHome = useCallback(() => {
     setScreen("home");
@@ -120,13 +113,11 @@ function App() {
         {screen === "home" && (
           <HomeScreen
             theme={theme}
-            soundEnabled={soundEnabled}
             onPlayRandom={goRandom}
             onPlayByFile={goFileBrowser}
             onMultiplayer={goMultiplayer}
             onThemes={goThemes}
             onLeaderboard={goLeaderboard}
-            onToggleSound={() => setSoundEnabled((s) => !s)}
             onQuit={() => renderer.destroy()}
           />
         )}
@@ -135,7 +126,6 @@ function App() {
           <TypeRaceScreen
             theme={theme}
             defaultTimerMode={config.timerMode}
-            soundEnabled={soundEnabled}
             onBack={goHome}
           />
         )}
@@ -153,7 +143,6 @@ function App() {
             theme={theme}
             customText={fileContent}
             defaultTimerMode={config.timerMode}
-            soundEnabled={soundEnabled}
             onBack={goHome}
           />
         )}

@@ -14,7 +14,6 @@ export interface ScoreEntry {
 export interface AppConfig {
   theme?: string;
   timerMode?: TimerMode;
-  soundEnabled?: boolean;
   scores?: ScoreEntry[];
 }
 

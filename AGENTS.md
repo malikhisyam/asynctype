@@ -158,7 +158,6 @@ bun run build        # outputs dist/index.js
 
 - [x] **Config file** — `~/.config/asynctype/config.json` for default theme, timer mode, etc.
 - [x] **Leaderboard** — persist high scores to `~/.config/asynctype/`
-- [x] **Sound feedback** — optional terminal bell on keystrokes, toggleable from home menu
 - [x] **Custom word pools** — user-defined dictionaries via `~/.config/asynctype/words.txt`
 - **Multiplayer mode** — placeholder screen exists at `"multiplayer"`; needs WebSocket or local IPC implementation
 
