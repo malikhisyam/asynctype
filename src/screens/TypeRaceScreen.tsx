@@ -142,7 +142,7 @@ export function TypeRaceScreen({
   useKeyboard(
     useCallback(
       (key) => {
-        if (key.name === "escape" || key.name === "q") {
+        if (key.name === "escape" || (!gameState.isRunning && key.name === "q")) {
           onBack();
           return;
         }
@@ -211,7 +211,7 @@ export function TypeRaceScreen({
           const newChar = typed[typed.length - 1];
           const targetChar = target[typed.length - 1];
           newState.totalKeystrokes += 1;
-          if (newChar === targetChar) {
+          if (newChar.toLowerCase() === targetChar.toLowerCase()) {
             newState.correctKeystrokes += 1;
           } else {
             newState.errors += 1;
@@ -278,7 +278,7 @@ export function TypeRaceScreen({
           <text fg={theme.muted}>
             {!gameState.isRunning
               ? "h/l to change mode · tab to restart · esc or q to quit"
-              : "tab to restart · esc or q to quit"}
+              : "tab to restart · esc to quit"}
           </text>
         </box>
       )}
