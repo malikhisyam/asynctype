@@ -193,7 +193,15 @@ export function TypeRaceScreen({
           }
         } else if (key.name && key.name.length === 1) {
           if (typed.length < target.length) {
-            typed += key.name;
+            let char = key.name;
+            if (
+              (key.shift || (key as unknown as { capsLock?: boolean }).capsLock) &&
+              char >= "a" &&
+              char <= "z"
+            ) {
+              char = char.toUpperCase();
+            }
+            typed += char;
           }
         }
 
