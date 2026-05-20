@@ -8,6 +8,7 @@ import {
   calculateStats,
 } from "../lib/game.js";
 import { saveConfig, saveScore } from "../lib/config.js";
+import { playKeystrokeSound } from "../lib/sound.js";
 import type { Theme } from "../lib/themes.js";
 import { Header } from "../components/Header.js";
 import { TimerDisplay } from "../components/TimerDisplay.js";
@@ -234,7 +235,7 @@ export function TypeRaceScreen({
         setGameState(newState);
 
         if (soundEnabled && typed.length > gameState.typedText.length) {
-          process.stdout.write("\x07");
+          playKeystrokeSound();
         }
       },
       [gameState, restartGame, onBack, mode, soundEnabled]
