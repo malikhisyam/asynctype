@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { useKeyboard } from "@opentui/react";
+import { useState, useCallback } from "react";
+import { useKeyboard, usePaste } from "@opentui/react";
+import { decodePasteBytes } from "@opentui/core";
+import { copyFileSync, existsSync, mkdirSync } from "fs";
+import { join, extname, basename } from "path";
+import { homedir } from "os";
 import type { Theme } from "../lib/themes.js";
 
 interface HomeScreenProps {
@@ -23,6 +27,26 @@ const STATIC_MENU_ITEMS = [
   { key: "quit", label: "quit", hint: "q" },
 ] as const;
 
+const SOUND_EXTENSIONS = new Set([".wav", ".mp3", ".ogg"]);
+const SOUNDS_DIR = join(homedir(), ".config", "asynctype", "sounds");
+
+function tryCopySoundFile(rawPath: string): string | null {
+  const path = rawPath.trim().replace(/["']/g, "");
+  const ext = extname(path).toLowerCase();
+  if (!SOUND_EXTENSIONS.has(ext)) return null;
+  if (!existsSync(path)) return null;
+  try {
+    if (!existsSync(SOUNDS_DIR)) {
+      mkdirSync(SOUNDS_DIR, { recursive: true });
+    }
+    const dest = join(SOUNDS_DIR, "keystroke" + ext);
+    copyFileSync(path, dest);
+    return basename(path);
+  } catch {
+    return null;
+  }
+}
+
 export function HomeScreen({
   theme,
   soundEnabled,
@@ -35,6 +59,7 @@ export function HomeScreen({
   onQuit,
 }: HomeScreenProps) {
   const [selected, setSelected] = useState(0);
+  const [soundMessage, setSoundMessage] = useState<string | null>(null);
 
   const menuItems = [
     ...STATIC_MENU_ITEMS.slice(0, -1),
@@ -115,6 +140,23 @@ export function HomeScreen({
     }
   });
 
+  usePaste(
+    useCallback(
+      (event) => {
+        const item = menuItems[selected];
+        if (item?.key !== "sound") return;
+        const text = decodePasteBytes(event.bytes).trim();
+        const copied = tryCopySoundFile(text);
+        if (copied) {
+          setSoundMessage(`Loaded "${copied}"`);
+        } else if (text.length > 0) {
+          setSoundMessage("Not a valid sound file (.wav/.mp3/.ogg)");
+        }
+      },
+      [menuItems, selected]
+    )
+  );
+
   return (
     <box flexDirection="column" alignItems="center" gap={1} paddingY={2}>
       <text fg={theme.accent}>
@@ -146,8 +188,18 @@ export function HomeScreen({
         })}
       </box>
 
+      {soundMessage && (
+        <box flexDirection="column" marginTop={1} alignItems="center">
+          <text fg={theme.accent}>{soundMessage}</text>
+        </box>
+      )}
+
       <box flexDirection="column" marginTop={2} alignItems="center">
-        <text fg={theme.muted}>j/k to navigate · enter or l to select · q to quit</text>
+        <text fg={theme.muted}>
+          {menuItems[selected]?.key === "sound"
+            ? "s to toggle · drop sound file here · q to quit"
+            : "j/k to navigate · enter or l to select · q to quit"}
+        </text>
       </box>
     </box>
   );
