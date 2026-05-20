@@ -1,5 +1,5 @@
 import { readdirSync, statSync, readFileSync } from "fs";
-import { join, basename } from "path";
+import { join, basename, dirname } from "path";
 
 export interface FileEntry {
   name: string;
@@ -46,7 +46,6 @@ export function readFileContent(path: string): string {
 }
 
 export function getParentDir(path: string): string {
-  const parts = path.split("/");
-  parts.pop();
-  return parts.join("/") || "/";
+  const parent = dirname(path);
+  return parent === path ? "/" : parent;
 }
