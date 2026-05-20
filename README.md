@@ -26,7 +26,6 @@ AsyncType is a terminal UI typing game built with [OpenTUI](https://github.com/a
 - **Zero mouse usage** — Fully keyboard-driven terminal experience
 - **Leaderboard** — Track and view your top 50 scores across sessions
 - **Config persistence** — Theme and timer mode preferences saved to `~/.config/asynctype/`
-- **Sound feedback** — Optional terminal bell on every keystroke, toggleable from home menu
 - **End screen** — Detailed post-game statistics with restart option
 
 ## Installation
@@ -59,7 +58,6 @@ bun run src/index.tsx
 | `b` | Leaderboard (shortcut) |
 | `m` | Multiplayer (placeholder) |
 | `t` | Themes (shortcut) |
-| `s` | Toggle sound on/off (shortcut) |
 | `q` | Quit |
 
 ### Typing Game
@@ -183,7 +181,6 @@ bun run dev
 
 - [x] **Config file** — `~/.config/asynctype/config.json` for theme & timer mode defaults
 - [x] **Leaderboard** — Persist high scores to `~/.config/asynctype/`
-- [x] **Sound feedback** — Optional terminal bell on keystrokes, toggleable from home menu
 - [x] **Custom word pools** — User-defined dictionaries via `~/.config/asynctype/words.txt`
 - [ ] **Multiplayer mode** — WebSocket or local IPC implementation
 

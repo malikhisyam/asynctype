@@ -8,7 +8,6 @@ import {
   calculateStats,
 } from "../lib/game.js";
 import { saveConfig, saveScore } from "../lib/config.js";
-import { playKeystrokeSound } from "../lib/sound.js";
 import type { Theme } from "../lib/themes.js";
 import { Header } from "../components/Header.js";
 import { TimerDisplay } from "../components/TimerDisplay.js";
@@ -30,7 +29,6 @@ interface TypeRaceScreenProps {
   theme: Theme;
   customText?: string;
   defaultTimerMode?: TimerMode;
-  soundEnabled?: boolean;
   onBack: () => void;
 }
 
@@ -38,7 +36,6 @@ export function TypeRaceScreen({
   theme,
   customText,
   defaultTimerMode,
-  soundEnabled,
   onBack,
 }: TypeRaceScreenProps) {
   const renderer = useRenderer();
@@ -233,12 +230,8 @@ export function TypeRaceScreen({
         }
 
         setGameState(newState);
-
-        if (soundEnabled && typed.length > gameState.typedText.length) {
-          playKeystrokeSound();
-        }
       },
-      [gameState, restartGame, onBack, mode, soundEnabled]
+      [gameState, restartGame, onBack, mode]
     )
   );
 
