@@ -1,3 +1,7 @@
+import { existsSync, readFileSync } from "fs";
+import { homedir } from "os";
+import { join } from "path";
+
 export type TimerMode = 15 | 30 | 60;
 
 export interface GameState {
@@ -88,12 +92,40 @@ export const DEV_WORD_POOL = [
   "ORM", "ODM", "pooling", "connection", "listener",
 ];
 
+const CUSTOM_WORDS_PATH = join(homedir(), ".config", "asynctype", "words.txt");
+
+let cachedCustomPool: string[] | null = null;
+
+function getWordPool(): string[] {
+  if (cachedCustomPool !== null) {
+    return cachedCustomPool.length > 0 ? cachedCustomPool : DEV_WORD_POOL;
+  }
+
+  try {
+    if (existsSync(CUSTOM_WORDS_PATH)) {
+      const raw = readFileSync(CUSTOM_WORDS_PATH, "utf-8");
+      const words = raw
+        .split(/\r?\n/)
+        .map((w) => w.trim())
+        .filter((w) => w.length > 0);
+      cachedCustomPool = words;
+      return words.length > 0 ? words : DEV_WORD_POOL;
+    }
+  } catch {
+    // silently fall back to default
+  }
+
+  cachedCustomPool = [];
+  return DEV_WORD_POOL;
+}
+
 export function generateTargetText(mode: TimerMode): string {
+  const pool = getWordPool();
   const wordCount = mode === 15 ? 30 : mode === 30 ? 60 : 120;
   const words: string[] = [];
   for (let i = 0; i < wordCount; i++) {
-    const idx = Math.floor(Math.random() * DEV_WORD_POOL.length);
-    words.push(DEV_WORD_POOL[idx]!);
+    const idx = Math.floor(Math.random() * pool.length);
+    words.push(pool[idx]!);
   }
   return words.join(" ");
 }
