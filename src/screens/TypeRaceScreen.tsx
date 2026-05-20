@@ -29,6 +29,7 @@ interface TypeRaceScreenProps {
   theme: Theme;
   customText?: string;
   defaultTimerMode?: TimerMode;
+  soundEnabled?: boolean;
   onBack: () => void;
 }
 
@@ -36,6 +37,7 @@ export function TypeRaceScreen({
   theme,
   customText,
   defaultTimerMode,
+  soundEnabled,
   onBack,
 }: TypeRaceScreenProps) {
   const renderer = useRenderer();
@@ -222,8 +224,12 @@ export function TypeRaceScreen({
         }
 
         setGameState(newState);
+
+        if (soundEnabled && typed.length > gameState.typedText.length) {
+          process.stdout.write("\x07");
+        }
       },
-      [gameState, restartGame, onBack, mode]
+      [gameState, restartGame, onBack, mode, soundEnabled]
     )
   );
 

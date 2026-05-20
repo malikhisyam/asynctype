@@ -4,15 +4,17 @@ import type { Theme } from "../lib/themes.js";
 
 interface HomeScreenProps {
   theme: Theme;
+  soundEnabled: boolean;
   onPlayRandom: () => void;
   onPlayByFile: () => void;
   onMultiplayer: () => void;
   onThemes: () => void;
   onLeaderboard: () => void;
+  onToggleSound: () => void;
   onQuit: () => void;
 }
 
-const MENU_ITEMS = [
+const STATIC_MENU_ITEMS = [
   { key: "random", label: "play random words", hint: "r" },
   { key: "file", label: "play by file", hint: "f" },
   { key: "leaderboard", label: "leaderboard", hint: "b" },
@@ -23,14 +25,26 @@ const MENU_ITEMS = [
 
 export function HomeScreen({
   theme,
+  soundEnabled,
   onPlayRandom,
   onPlayByFile,
   onMultiplayer,
   onThemes,
   onLeaderboard,
+  onToggleSound,
   onQuit,
 }: HomeScreenProps) {
   const [selected, setSelected] = useState(0);
+
+  const menuItems = [
+    ...STATIC_MENU_ITEMS.slice(0, -1),
+    {
+      key: "sound",
+      label: `sound: ${soundEnabled ? "on" : "off"}`,
+      hint: "s",
+    },
+    STATIC_MENU_ITEMS[STATIC_MENU_ITEMS.length - 1],
+  ];
 
   useKeyboard((key) => {
     if (key.name === "q") {
@@ -38,7 +52,7 @@ export function HomeScreen({
       return;
     }
     if (key.name === "j" || key.name === "down") {
-      setSelected((s) => Math.min(MENU_ITEMS.length - 1, s + 1));
+      setSelected((s) => Math.min(menuItems.length - 1, s + 1));
       return;
     }
     if (key.name === "k" || key.name === "up") {
@@ -46,7 +60,7 @@ export function HomeScreen({
       return;
     }
     if (key.name === "enter" || key.name === "return" || key.name === "l") {
-      const item = MENU_ITEMS[selected];
+      const item = menuItems[selected];
       if (item) {
         switch (item.key) {
           case "random":
@@ -63,6 +77,9 @@ export function HomeScreen({
             break;
           case "leaderboard":
             onLeaderboard();
+            break;
+          case "sound":
+            onToggleSound();
             break;
           case "quit":
             onQuit();
@@ -92,6 +109,10 @@ export function HomeScreen({
       onLeaderboard();
       return;
     }
+    if (key.name === "s") {
+      onToggleSound();
+      return;
+    }
   });
 
   return (
@@ -102,7 +123,7 @@ export function HomeScreen({
       <text fg={theme.muted}>a vim-inspired terminal typing racer</text>
 
       <box flexDirection="column" gap={0} marginTop={2} alignItems="flex-start">
-        {MENU_ITEMS.map((item, i) => {
+        {menuItems.map((item, i) => {
           const isSelected = i === selected;
           return (
             <box
