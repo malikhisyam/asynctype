@@ -103,6 +103,9 @@ Themes are defined in `src/lib/themes.ts`. Each theme is a `Theme` interface wit
 ### Word pool
 `DEV_WORD_POOL` in `src/lib/game.ts` contains ~150 developer-oriented terms across categories: programming, terminal commands, AI/dev, git, Linux, async/concurrency, web, database.
 
+### Custom word pools
+Users can create `~/.config/asynctype/words.txt` with one word per line. If the file exists and has content, it replaces the default `DEV_WORD_POOL`. Empty lines are ignored. If the file is missing or empty, the default pool is used.
+
 ### Custom text (file mode)
 When `customText` is passed to `TypeRaceScreen`, the timer is still active but the target text is the file content (truncated to 2000 chars by `readFileContent`).
 
@@ -156,8 +159,8 @@ bun run build        # outputs dist/index.js
 - [x] **Config file** — `~/.config/asynctype/config.json` for default theme, timer mode, etc.
 - [x] **Leaderboard** — persist high scores to `~/.config/asynctype/`
 - [x] **Sound feedback** — optional terminal bell on keystrokes, toggleable from home menu
+- [x] **Custom word pools** — user-defined dictionaries via `~/.config/asynctype/words.txt`
 - **Multiplayer mode** — placeholder screen exists at `"multiplayer"`; needs WebSocket or local IPC implementation
-- **Custom word pools** — user-defined dictionaries
 
 ## How to Collaborate
 

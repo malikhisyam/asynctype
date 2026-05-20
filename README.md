@@ -16,6 +16,7 @@ AsyncType is a terminal UI typing game built with [OpenTUI](https://github.com/a
 
 - **Typing race gameplay** — Real-time character-level feedback with correct/incorrect coloring
 - **Developer word pool** — 150+ terms from programming, git, Linux, AI, async/concurrency, web, and database domains
+- **Custom word pools** — Drop your own words into `~/.config/asynctype/words.txt` (one per line) to replace the default pool
 - **Play by file** — Browse your filesystem and race against actual source code, configs, or documentation
 - **Timer modes** — 15s / 30s / 60s countdowns
 - **Live stats** — WPM, Raw WPM, Accuracy, and character counts updated in real-time
@@ -119,6 +120,21 @@ Browse your filesystem (starting from the current working directory), pick any f
 - Reviewing documentation
 - Typing out configuration files
 
+### Custom Word Pools
+Create `~/.config/asynctype/words.txt` with one word per line to replace the default developer word pool:
+
+```bash
+mkdir -p ~/.config/asynctype
+cat > ~/.config/asynctype/words.txt <<EOF
+apple
+banana
+cherry
+dragonfruit
+EOF
+```
+
+Empty lines are ignored. Delete the file or leave it empty to restore the default 150+ developer terms.
+
 ## Architecture
 
 ```
@@ -168,8 +184,8 @@ bun run dev
 - [x] **Config file** — `~/.config/asynctype/config.json` for theme & timer mode defaults
 - [x] **Leaderboard** — Persist high scores to `~/.config/asynctype/`
 - [x] **Sound feedback** — Optional terminal bell on keystrokes, toggleable from home menu
+- [x] **Custom word pools** — User-defined dictionaries via `~/.config/asynctype/words.txt`
 - [ ] **Multiplayer mode** — WebSocket or local IPC implementation
-- [ ] **Custom word pools** — User-defined dictionaries
 
 ## Contributing
 
