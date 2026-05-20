@@ -7,7 +7,7 @@ import {
   createInitialState,
   calculateStats,
 } from "../lib/game.js";
-import { saveConfig } from "../lib/config.js";
+import { saveConfig, saveScore } from "../lib/config.js";
 import type { Theme } from "../lib/themes.js";
 import { Header } from "../components/Header.js";
 import { TimerDisplay } from "../components/TimerDisplay.js";
@@ -70,6 +70,7 @@ export function TypeRaceScreen({
       setStats(calculateStats(fresh));
       setIsShaking(false);
       setShakeFrame(0);
+      savedRef.current = false;
     },
     [mode, customText]
   );
@@ -102,6 +103,21 @@ export function TypeRaceScreen({
   useEffect(() => {
     setStats(calculateStats(gameState));
   }, [gameState]);
+
+  const savedRef = useRef(false);
+
+  useEffect(() => {
+    if (gameState.isFinished && !savedRef.current && gameState.totalKeystrokes > 0) {
+      savedRef.current = true;
+      saveScore({
+        wpm: stats.wpm,
+        rawWpm: stats.rawWpm,
+        accuracy: stats.accuracy,
+        mode,
+        date: new Date().toISOString(),
+      });
+    }
+  }, [gameState.isFinished, gameState.totalKeystrokes, stats, mode]);
 
   useEffect(() => {
     if (gameState.errors > prevErrorsRef.current) {

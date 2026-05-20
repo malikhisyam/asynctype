@@ -8,12 +8,14 @@ interface HomeScreenProps {
   onPlayByFile: () => void;
   onMultiplayer: () => void;
   onThemes: () => void;
+  onLeaderboard: () => void;
   onQuit: () => void;
 }
 
 const MENU_ITEMS = [
   { key: "random", label: "play random words", hint: "r" },
   { key: "file", label: "play by file", hint: "f" },
+  { key: "leaderboard", label: "leaderboard", hint: "b" },
   { key: "multiplayer", label: "multiplayer", hint: "m" },
   { key: "themes", label: "themes", hint: "t" },
   { key: "quit", label: "quit", hint: "q" },
@@ -25,6 +27,7 @@ export function HomeScreen({
   onPlayByFile,
   onMultiplayer,
   onThemes,
+  onLeaderboard,
   onQuit,
 }: HomeScreenProps) {
   const [selected, setSelected] = useState(0);
@@ -58,6 +61,9 @@ export function HomeScreen({
           case "themes":
             onThemes();
             break;
+          case "leaderboard":
+            onLeaderboard();
+            break;
           case "quit":
             onQuit();
             break;
@@ -80,6 +86,10 @@ export function HomeScreen({
     }
     if (key.name === "t") {
       onThemes();
+      return;
+    }
+    if (key.name === "b") {
+      onLeaderboard();
       return;
     }
   });

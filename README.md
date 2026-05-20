@@ -23,6 +23,8 @@ AsyncType is a terminal UI typing game built with [OpenTUI](https://github.com/a
 - **7 color themes** — Tokyo Night, Gruvbox Dark, Catppuccin Mocha, Monokai, Solarized Dark, Dracula, Nord
 - **Vim-first navigation** — `j/k` navigate, `h` back, `l/enter` confirm, `q/esc` quit
 - **Zero mouse usage** — Fully keyboard-driven terminal experience
+- **Leaderboard** — Track and view your top 50 scores across sessions
+- **Config persistence** — Theme and timer mode preferences saved to `~/.config/asynctype/`
 - **End screen** — Detailed post-game statistics with restart option
 
 ## Installation
@@ -52,6 +54,7 @@ bun run src/index.tsx
 | `enter` / `l` | Select |
 | `r` | Play random words (shortcut) |
 | `f` | Play by file (shortcut) |
+| `b` | Leaderboard (shortcut) |
 | `m` | Multiplayer (placeholder) |
 | `t` | Themes (shortcut) |
 | `q` | Quit |
@@ -160,11 +163,11 @@ bun run dev
 
 ## Future Roadmap
 
+- [x] **Config file** — `~/.config/asynctype/config.json` for theme & timer mode defaults
+- [x] **Leaderboard** — Persist high scores to `~/.config/asynctype/`
 - [ ] **Multiplayer mode** — WebSocket or local IPC implementation
-- [ ] **Leaderboard** — Persist high scores to `~/.config/asynctype/`
 - [ ] **Custom word pools** — User-defined dictionaries
 - [ ] **Sound feedback** — Optional beep / click on keystrokes
-- [ ] **Config file** — `~/.config/asynctype/config.json` for defaults
 
 ## Contributing
 

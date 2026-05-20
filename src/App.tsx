@@ -6,6 +6,7 @@ import { HomeScreen } from "./screens/HomeScreen.js";
 import { FileBrowser } from "./screens/FileBrowser.js";
 import { ThemeScreen } from "./screens/ThemeScreen.js";
 import { TypeRaceScreen } from "./screens/TypeRaceScreen.js";
+import { LeaderboardScreen } from "./screens/LeaderboardScreen.js";
 
 type Screen =
   | "home"
@@ -13,7 +14,8 @@ type Screen =
   | "filebrowser"
   | "filegame"
   | "multiplayer"
-  | "themes";
+  | "themes"
+  | "leaderboard";
 
 function MultiplayerPlaceholder({
   theme,
@@ -77,6 +79,10 @@ function App() {
     setScreen("themes");
   }, []);
 
+  const goLeaderboard = useCallback(() => {
+    setScreen("leaderboard");
+  }, []);
+
   const handleSelectFile = useCallback((content: string) => {
     setFileContent(content);
     setScreen("filegame");
@@ -111,6 +117,7 @@ function App() {
             onPlayByFile={goFileBrowser}
             onMultiplayer={goMultiplayer}
             onThemes={goThemes}
+            onLeaderboard={goLeaderboard}
             onQuit={() => renderer.destroy()}
           />
         )}
@@ -148,6 +155,14 @@ function App() {
           <ThemeScreen
             currentTheme={theme}
             onSelectTheme={handleSelectTheme}
+            onBack={goHome}
+          />
+        )}
+
+        {screen === "leaderboard" && (
+          <LeaderboardScreen
+            scores={config.scores ?? []}
+            theme={theme}
             onBack={goHome}
           />
         )}
