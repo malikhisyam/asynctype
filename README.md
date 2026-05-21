@@ -28,19 +28,43 @@ AsyncType is a terminal UI typing game built with [OpenTUI](https://github.com/a
 - **Config persistence** — Theme and timer mode preferences saved to `~/.config/asynctype/`
 - **End screen** — Detailed post-game statistics with restart option
 
-## Installation
+## ⚠️ Requires Bun
 
-Requires [Bun](https://bun.com) (Node.js will not work — OpenTUI uses Bun-only APIs).
+**AsyncType requires [Bun](https://bun.com) to run. Node.js and npm alone are not sufficient — OpenTUI uses Bun-only APIs.**
+
+If you don't have Bun installed:
 
 ```bash
-# Clone the repository
+curl -fsSL https://bun.sh/install | bash
+```
+
+## Installation
+
+### Quick install (recommended)
+
+```bash
+# Install globally with Bun
+bun add -g asynctype
+
+# Run from anywhere
+asynctype
+```
+
+### Alternative: npm (still requires Bun runtime)
+
+```bash
+npm install -g asynctype
+asynctype
+```
+
+> **Note:** `npm install` will download the package, but `asynctype` still needs the Bun runtime to execute. Make sure Bun is installed first.
+
+### Development
+
+```bash
 git clone https://github.com/malikhisyam/asynctype.git
 cd asynctype
-
-# Install dependencies
 bun install
-
-# Run the game
 bun run src/index.tsx
 ```
 
