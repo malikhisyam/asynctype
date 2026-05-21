@@ -70,6 +70,7 @@ export function TypeRaceScreen({
       setStats(calculateStats(fresh));
       setIsShaking(false);
       setShakeFrame(0);
+      setScrollOffset(0);
       savedRef.current = false;
     },
     [mode, customText]
@@ -104,6 +105,9 @@ export function TypeRaceScreen({
     setStats(calculateStats(gameState));
   }, [gameState]);
 
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const VISIBLE_LINES = 12;
+
   const savedRef = useRef(false);
 
   useEffect(() => {
@@ -118,6 +122,26 @@ export function TypeRaceScreen({
       });
     }
   }, [gameState.isFinished, gameState.totalKeystrokes, stats, mode]);
+
+  // Auto-scroll: keep cursor line visible
+  useEffect(() => {
+    const target = gameState.targetText;
+    const typedLen = gameState.typedText.length;
+    let cursorLine = 0;
+    for (let i = 0; i < typedLen && i < target.length; i++) {
+      if (target[i] === "\n") cursorLine++;
+    }
+
+    setScrollOffset((prev) => {
+      if (cursorLine < prev) {
+        return cursorLine;
+      }
+      if (cursorLine >= prev + VISIBLE_LINES) {
+        return cursorLine - VISIBLE_LINES + 1;
+      }
+      return prev;
+    });
+  }, [gameState.targetText, gameState.typedText]);
 
   useEffect(() => {
     if (gameState.errors > prevErrorsRef.current) {
@@ -188,6 +212,13 @@ export function TypeRaceScreen({
         } else if (key.name === "space" || key.name === " ") {
           if (typed.length < target.length) {
             typed += " ";
+          }
+        } else if (key.name === "return" || key.name === "enter") {
+          if (typed.length < target.length) {
+            const targetChar = target[typed.length];
+            if (targetChar === "\n") {
+              typed += "\n";
+            }
           }
         } else if (key.name && key.name.length === 1) {
           if (typed.length < target.length) {
@@ -272,6 +303,8 @@ export function TypeRaceScreen({
           typedText={gameState.typedText}
           isFinished={gameState.isFinished}
           theme={theme}
+          scrollOffset={scrollOffset}
+          visibleLineCount={VISIBLE_LINES}
         />
       )}
 

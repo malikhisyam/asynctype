@@ -32,14 +32,17 @@ export function scanDirectory(dir: string): FileEntry[] {
 export function readFileContent(path: string): string {
   try {
     const content = readFileSync(path, "utf-8");
-    // Normalize: collapse excessive whitespace, strip non-printable chars
-    return content
-      .replace(/\r\n/g, "\n")
-      .replace(/\t/g, "  ")
-      .replace(/\n+/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 2000);
+    // Normalize line endings
+    const normalized = content.replace(/\r\n/g, "\n");
+    // Convert tabs to 2 spaces, trim trailing whitespace per line
+    const lines = normalized
+      .split("\n")
+      .map((line) => line.replace(/\t/g, "  ").replace(/\s+$/, ""));
+    // Take first 80 lines, join with actual newlines preserved
+    const limited = lines.slice(0, 80);
+    const joined = limited.join("\n");
+    // Hard cap at 5000 characters
+    return joined.slice(0, 5000);
   } catch {
     return "Could not read file contents.";
   }
