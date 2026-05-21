@@ -1,0 +1,23 @@
+# Source files (only dist/ should be in the package)
+src/
+tsconfig.json
+bun.lock
+skills-lock.json
+
+# Dev files
+.env
+.env.*
+*.log
+.cache
+.eslintcache
+*.tsbuildinfo
+
+# IDE
+.idea
+.vscode
+
+# OS
+.DS_Store
+
+# CI/CD config (not needed in the package)
+.github/
