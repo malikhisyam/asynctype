@@ -5,34 +5,76 @@ interface TypingAreaProps {
   typedText: string;
   isFinished: boolean;
   theme: Theme;
+  scrollOffset: number;
+  visibleLineCount: number;
 }
 
-export function TypingArea({ targetText, typedText, isFinished, theme }: TypingAreaProps) {
-  const chars: React.ReactNode[] = [];
+export function TypingArea({
+  targetText,
+  typedText,
+  isFinished,
+  theme,
+  scrollOffset,
+  visibleLineCount,
+}: TypingAreaProps) {
+  const lines = targetText.split("\n");
 
-  for (let i = 0; i < targetText.length; i++) {
-    const targetChar = targetText[i]!;
-    const typedChar = typedText[i];
+  // Calculate the global character index where the visible slice starts
+  let startGlobalIndex = 0;
+  for (let i = 0; i < scrollOffset && i < lines.length; i++) {
+    startGlobalIndex += lines[i]!.length + 1; // +1 for newline
+  }
 
-    let fg = theme.untyped;
-    let bg: string | undefined = undefined;
+  let globalIndex = startGlobalIndex;
+  const endLine = Math.min(lines.length, scrollOffset + visibleLineCount);
+  const renderedLines: React.ReactNode[] = [];
 
-    if (typedChar !== undefined) {
-      if (typedChar === targetChar) {
-        fg = theme.correct;
-      } else {
-        fg = theme.error;
-        bg = theme.errorBg;
+  for (let lineIdx = scrollOffset; lineIdx < endLine; lineIdx++) {
+    const line = lines[lineIdx]!;
+    const chars: React.ReactNode[] = [];
+
+    for (let i = 0; i < line.length; i++) {
+      const targetChar = line[i]!;
+      const typedChar = typedText[globalIndex];
+
+      let fg = theme.untyped;
+      let bg: string | undefined = undefined;
+
+      if (typedChar !== undefined) {
+        if (typedChar === targetChar) {
+          fg = theme.correct;
+        } else {
+          fg = theme.error;
+          bg = theme.errorBg;
+        }
+      } else if (globalIndex === typedText.length && !isFinished) {
+        fg = theme.cursor;
       }
-    } else if (i === typedText.length && !isFinished) {
-      fg = theme.cursor;
+
+      chars.push(
+        <span key={globalIndex} fg={fg} bg={bg}>
+          {targetChar}
+        </span>
+      );
+      globalIndex++;
     }
 
-    chars.push(
-      <span key={i} fg={fg} bg={bg}>
-        {targetChar}
-      </span>
-    );
+    // Cursor at end of line when all chars on this line are typed
+    const isEndOfLineCursor =
+      !isFinished && globalIndex === typedText.length && line.length > 0;
+
+    if (isEndOfLineCursor) {
+      chars.push(
+        <span key={`cursor-${lineIdx}`} fg={theme.cursor}>
+          {" "}
+        </span>
+      );
+    }
+
+    renderedLines.push(<text key={lineIdx}>{chars}</text>);
+
+    // Advance past the newline character in targetText
+    globalIndex++;
   }
 
   return (
@@ -41,8 +83,9 @@ export function TypingArea({ targetText, typedText, isFinished, theme }: TypingA
       paddingY={1}
       flexDirection="column"
       alignItems="flex-start"
+      gap={0}
     >
-      <text>{chars}</text>
+      {renderedLines}
     </box>
   );
 }
