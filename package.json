@@ -1,6 +1,6 @@
 {
   "name": "asynctype",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A vim-inspired terminal typing racer for developers waiting on async jobs, AI agents, builds, and long-running tasks.",
   "main": "dist/index.js",
   "module": "dist/index.js",
