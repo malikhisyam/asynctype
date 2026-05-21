@@ -1,19 +1,55 @@
 {
   "name": "asynctype",
-  "version": "0.1.0",
-  "module": "src/index.tsx",
+  "version": "1.0.0",
+  "description": "A vim-inspired terminal typing racer for developers waiting on async jobs, AI agents, builds, and long-running tasks.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "type": "module",
-  "private": true,
+  "bin": {
+    "asynctype": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "bun run src/index.tsx",
     "dev": "bun --watch run src/index.tsx",
     "build": "bun build src/index.tsx --outdir=dist --target=bun",
-    "test": "bun test"
+    "postbuild": "echo '#!/usr/bin/env bun' | cat - dist/index.js > temp && mv temp dist/index.js && chmod +x dist/index.js",
+    "test": "bun test",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "typing",
+    "terminal",
+    "tui",
+    "typing-test",
+    "typing-game",
+    "cli",
+    "developer-tools",
+    "productivity",
+    "vim",
+    "opentui",
+    "bun"
+  ],
+  "author": "Malik Hisyam <malikhisyam@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malikhisyam/asynctype.git"
+  },
+  "bugs": {
+    "url": "https://github.com/malikhisyam/asynctype/issues"
+  },
+  "homepage": "https://github.com/malikhisyam/asynctype#readme",
+  "engines": {
+    "bun": ">=1.0.0"
   },
   "dependencies": {
     "@opentui/core": "^0.2.14",
     "@opentui/react": "^0.2.14",
-    "play-sound": "^1.1.6",
     "react": "^19.2.6"
   },
   "devDependencies": {

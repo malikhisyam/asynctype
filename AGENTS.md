@@ -19,7 +19,7 @@ AsyncType is a terminal UI typing game that feels like "Monkeytype for developer
 ```
 src/
 ├── index.tsx              # Entry point — renderer setup + root render
-├── App.tsx                # Top-level screen router (home / random / filebrowser / filegame / multiplayer / themes)
+├── App.tsx                # Top-level screen router (home / random / filebrowser / filegame / leaderboard / multiplayer / themes)
 ├── lib/
 │   ├── game.ts            # Word pool, game state factory, WPM/accuracy calculations
 │   ├── themes.ts          # 7 color theme definitions + default
@@ -119,9 +119,9 @@ The `screen` state is a discriminated union of string literals:
 | `"random"` | Typing race with random words |
 | `"filebrowser"` | Browse filesystem |
 | `"filegame"` | Typing race with selected file content |
+| `"leaderboard"` | Score history table |
 | `"multiplayer"` | Placeholder — "Coming soon..." |
 | `"themes"` | Theme picker |
-| `"leaderboard"` | Score history table |
 
 Navigation is handled by `go*` callbacks that `setScreen(...)`. Each screen unmounts when leaving, which cleans up its `useKeyboard` handler automatically.
 
