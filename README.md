@@ -18,6 +18,9 @@ AsyncType is a terminal UI typing game built with [OpenTUI](https://github.com/a
 - **Developer word pool** — 150+ terms from programming, git, Linux, AI, async/concurrency, web, and database domains
 - **Custom word pools** — Drop your own words into `~/.config/asynctype/words.txt` (one per line) to replace the default pool
 - **Play by file** — Browse your filesystem and race against actual source code, configs, or documentation
+- **Code formatting preserved** — Multi-line files render with indentation and line breaks intact, auto-scrolls as you type
+- **Fuzzy file finder** — Telescope-style real-time search by filename or path in the file browser
+- **Quick Open** — Press `Ctrl+P` / `Cmd+P` / `o` from the home menu to instantly find and open any file
 - **Timer modes** — 15s / 30s / 60s countdowns
 - **Live stats** — WPM, Raw WPM, Accuracy, and character counts updated in real-time
 - **Screen shake on mistake** — Tactile visual feedback when you mistype
@@ -81,6 +84,7 @@ bun run src/index.tsx
 | `f` | Play by file (shortcut) |
 | `b` | Leaderboard (shortcut) |
 | `m` | Multiplayer (placeholder) |
+| `o` / `Ctrl+P` / `Cmd+P` | Quick Open — fuzzy find any file |
 | `t` | Themes (shortcut) |
 | `q` | Quit |
 
@@ -103,6 +107,8 @@ bun run src/index.tsx
 | `k` / `↑` | Move up |
 | `l` / `enter` | Open file or directory |
 | `h` / `esc` | Parent directory |
+| `a-z`, `0-9` | Start fuzzy search by filename or path |
+| `backspace` | Delete query char (empty = exit search) |
 | `q` | Back to home |
 
 ### Theme Picker
@@ -206,6 +212,8 @@ bun run dev
 - [x] **Config file** — `~/.config/asynctype/config.json` for theme & timer mode defaults
 - [x] **Leaderboard** — Persist high scores to `~/.config/asynctype/`
 - [x] **Custom word pools** — User-defined dictionaries via `~/.config/asynctype/words.txt`
+- [x] **Preserve code formatting** — Multi-line files with indentation, auto-scroll, and newline typing
+- [x] **Telescope file search** — Fuzzy filename + path matching with file type icons
 - [ ] **Multiplayer mode** — WebSocket or local IPC implementation
 
 ## Contributing
