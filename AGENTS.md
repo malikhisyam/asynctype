@@ -23,16 +23,16 @@ src/
 ├── lib/
 │   ├── game.ts            # Word pool, game state factory, WPM/accuracy calculations
 │   ├── themes.ts          # 7 color theme definitions + default
-│   └── files.ts           # Directory scanner + file reader utilities
+│   └── files.ts           # Directory scanner (recursive), file reader, fuzzy filename/path search, file type icons
 ├── components/            # Pure presentational components (all theme-aware)
 │   ├── Header.tsx         # Title + timer mode selector
 │   ├── TimerDisplay.tsx   # Countdown with color shift at <= 5s
 │   ├── StatsBar.tsx       # Live WPM / Raw / Acc / Chars
-│   ├── TypingArea.tsx     # Character-level highlighting + cursor
+│   ├── TypingArea.tsx     # Character-level highlighting + cursor; multi-line rendering with auto-scroll
 │   └── EndScreen.tsx      # Post-game stats
 └── screens/               # Full-screen views with their own keyboard handlers
-    ├── HomeScreen.tsx     # Main menu with vim navigation (j/k/enter/l/q)
-    ├── FileBrowser.tsx    # h/j/k/l file explorer
+    ├── HomeScreen.tsx     # Main menu with vim navigation + Quick Open overlay (Ctrl/Cmd+P, o)
+    ├── FileBrowser.tsx    # h/j/k/l file explorer with telescope-style fuzzy search + file type icons
     ├── ThemeScreen.tsx    # j/k theme picker
     ├── LeaderboardScreen.tsx # Score history table (j/k navigate, h/q/esc back)
     └── TypeRaceScreen.tsx # The typing game (extracted from original App)
@@ -107,7 +107,7 @@ Themes are defined in `src/lib/themes.ts`. Each theme is a `Theme` interface wit
 Users can create `~/.config/asynctype/words.txt` with one word per line. If the file exists and has content, it replaces the default `DEV_WORD_POOL`. Empty lines are ignored. If the file is missing or empty, the default pool is used.
 
 ### Custom text (file mode)
-When `customText` is passed to `TypeRaceScreen`, the timer is still active but the target text is the file content (truncated to 2000 chars by `readFileContent`).
+When `customText` is passed to `TypeRaceScreen`, the timer is still active but the target text is the file content (truncated to 5000 chars by `readFileContent`). Newlines and indentation are preserved; the user types each line in sequence and `enter` advances past newline characters. The viewport auto-scrolls to keep the current line visible (`visibleLineCount` = 12 lines).
 
 ## Screen Router (`App.tsx`)
 
@@ -159,6 +159,8 @@ bun run build        # outputs dist/index.js
 - [x] **Config file** — `~/.config/asynctype/config.json` for default theme, timer mode, etc.
 - [x] **Leaderboard** — persist high scores to `~/.config/asynctype/`
 - [x] **Custom word pools** — user-defined dictionaries via `~/.config/asynctype/words.txt`
+- [x] **Preserve code formatting** — multi-line file display with indentation, auto-scroll, newline typing
+- [x] **Telescope file search** — real-time fuzzy filename + path matching with file type icons
 - **Multiplayer mode** — placeholder screen exists at `"multiplayer"`; needs WebSocket or local IPC implementation
 
 ## How to Collaborate
