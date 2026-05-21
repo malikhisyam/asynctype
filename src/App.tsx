@@ -118,6 +118,7 @@ function App() {
             onMultiplayer={goMultiplayer}
             onThemes={goThemes}
             onLeaderboard={goLeaderboard}
+            onSelectFile={handleSelectFile}
             onQuit={() => renderer.destroy()}
           />
         )}
